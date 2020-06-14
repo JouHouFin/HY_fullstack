@@ -1,0 +1,30 @@
+Fullstack sekvenssikaavio
+
+Selain-->Palvelin: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note
+
+note over Palvelin:
+Palvelin lisää muistiinpanon tietorakenteeseen ja pyytää
+selainta lataamaan muistiinpanosivun uudelleen
+end note
+
+Palvelin-->Selain: 302 Found /notes (uudelleenohjaus)
+Selain-->Palvelin: HTTP GET https://fullstack-exampleapp.herokuapp.com/notes
+Palvelin-->Selain: HTML-koodi
+Selain-->Palvelin: HTTP GET https://fullstack-exampleapp.herokuapp.com/main.css
+Palvelin-->Selain: main.css
+Selain-->Palvelin: HTTP GET https://fullstack-exampleapp.herokuapp.com/main.js
+Palvelin-->Selain: main.js
+
+note over Selain:
+Selain suorittaa main.js-tiedoston sisältävän koodin.
+Koodi pyytää palvelimelta data.json-tiedostoa.
+end note
+
+Selain-->Palvelin: HTTP GET https://fullstack-exampleapp.herokuapp.com/data.json
+Palvelin-->Selain: data.json
+
+note over Selain:
+Kun edelliseen GET-pyyntöön on saatu vastauskoodi 200,
+selain suorittaa takaisinkutsufunktion, joka piirtää uuden
+muistiinpanon sivulle
+end note
