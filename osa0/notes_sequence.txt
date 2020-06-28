@@ -1,4 +1,4 @@
-Fullstack sekvenssikaavio
+title Fullstack sekvenssikaavio
 
 Selain-->Palvelin: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note
 

@@ -1,0 +1,11 @@
+title Fullstack sekvenssikaavio SPA
+
+note over Selain
+Selain rekisteröi lomake-elementille tapahtumankäsittelijän, 
+lisää muistiinpanon notes-listaan, suorittaa funktion reDrawNotes(),
+eli piirtää muistiinpanot sisältävän listan uudelleen ja lähettää 
+sitten muistiinpanon JSON-muotoisena palvelimelle
+end note
+
+Selain-->Palvelin: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note_spa
+Palvelin-->Selain: 201 Created

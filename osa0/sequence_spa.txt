@@ -1,0 +1,10 @@
+title Fullstack sekvenssikaavio SPA
+
+Selain-->Palvelin: HTTP GET https://fullstack-exampleapp.herokuapp.com/spa
+Palvelin-->Selain: 200 OK + HTML-koodi
+Selain-->Palvelin: HTTP GET https://fullstack-exampleapp.herokuapp.com/main.css
+Palvelin-->Selain: 200 OK + main.css
+Selain-->Palvelin: HTTP GET https://fullstack-exampleapp.herokuapp.com/spa.js
+Palvelin-->Selain: 200 OK + spa.js
+Selain-->Palvelin: HTTP GET https://fullstack-exampleapp.herokuapp.com/data.json
+Palvelin-->Selain: 200 OK + data.json
