@@ -4,6 +4,13 @@ import ReactDOM from 'react-dom'
 const Button = ({handleClick, text}) => <button onClick={handleClick}>{text}</button>
 
 const Statistics = ({good, neutral, bad}) => {
+  if (good + neutral + bad === 0) {
+    return (
+      <div>
+        <p>No feedback given yet.</p>
+      </div>
+    )
+  }
   return (
     <div>
       <h2>Statistics</h2>
@@ -11,9 +18,10 @@ const Statistics = ({good, neutral, bad}) => {
       <p style={{color: "blue"}}>Neutral: {neutral}</p>
       <p style={{color: "red"}}>Bad: {bad}</p>
       <br />
+
       <p>Feedbacks given: {good + neutral + bad}</p>
       <p>Average feedback score: {(good + neutral*0.0 + bad*-1) / (good + neutral + bad)}</p>
-      <p>Percentage of positive feedback: {(good) / (good + neutral + bad) * 100}%</p>
+      <p>Percentage of positive (good) feedback: {(good) / (good + neutral + bad) * 100}%</p>
     </div>
   )
 }
