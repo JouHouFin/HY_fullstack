@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 
 const Button = ({handleClick, text}) => <button onClick={handleClick}>{text}</button>
 
-const StatisticLine = ({text, value, color}) => <p style={{color: color}}>{text}: {value}</p>
+const StatisticLine = ({text, value, color}) => <tr><td style={{color: color}}>{text}</td><td>{value}</td></tr>
 
 const Statistics = ({good, neutral, bad}) => {
   if (good + neutral + bad === 0) {
@@ -16,19 +16,26 @@ const Statistics = ({good, neutral, bad}) => {
   return (
     <div>
       <h2>Statistics</h2>
-      <StatisticLine text={"Good"} value={good} color={"green"} />
-      <StatisticLine text={"Neutral"} value={neutral} color={"blue"} />
-      <StatisticLine text={"Bad"} value={bad} color={"red"} />
+      <table>
+        <tbody>
+          <StatisticLine text={"Good"} value={good} color={"green"} />
+          <StatisticLine text={"Neutral"} value={neutral} color={"blue"} />
+          <StatisticLine text={"Bad"} value={bad} color={"red"} />
+        </tbody>
+      </table>
       <br />
-      <StatisticLine text={"Feedbacks given"} value={good + neutral + bad} />
-      <StatisticLine text={"Average feedback score"} value={(good + neutral*0.0 + bad*-1) / (good + neutral + bad)} />
-      <StatisticLine text={"Percentage of positive (good) feedback"} value={(good) / (good + neutral + bad) * 100} />
+      <table>
+        <tbody>
+          <StatisticLine text={"Feedbacks given"} value={good + neutral + bad} />
+          <StatisticLine text={"Average feedback score"} value={((good + neutral*0.0 + bad*-1) / (good + neutral + bad)).toFixed(2)} />
+          <StatisticLine text={"Percentage of positive (good) feedback"} value={((good) / (good + neutral + bad) * 100).toFixed(2) + "%"} />
+        </tbody>
+      </table>
     </div>
   )
 }
 
 const App = () => {
-  // tallenna napit omaan tilaansa
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
