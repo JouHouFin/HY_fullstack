@@ -1,24 +1,35 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 
-const App = (props) => {
-  const [selected, setSelected] = useState(0)
+const getRandom = (min, max) => {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
+}
 
-  const getRandom = (min, max) => {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min)) + min;
-  }
+const App = (props) => {
+  const [selected, setSelected] = useState(getRandom(0, anecdotes.length))
+  const [votes, setVotes] = useState(Array.apply(null, new Array(anecdotes.length)).map(Number.prototype.valueOf,0))
 
   const selectRandom = () => {
     setSelected(getRandom(0, anecdotes.length))
+    console.log("Changing anecdote state")
+  }
+
+  const handleVotes = () => {
+    const newVotes = [...votes]
+    newVotes[selected] += 1
+    setVotes(newVotes)
   }
 
   return (
     <div>
-      {props.anecdotes[selected]}
+      <h1>Here's a random nerd anecdote!</h1>
+      <p>{props.anecdotes[selected]}</p>
+      <p>Has {votes[selected]} votes</p>
       <br />
-      <button onClick={selectRandom}>Give me a random anecdote!</button>
+      <button onClick={handleVotes}>Vote this anecdote</button>
+      <button onClick={selectRandom}>Give me a new random anecdote!</button>
     </div>
   )
 }
