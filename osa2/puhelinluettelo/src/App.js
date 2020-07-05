@@ -14,9 +14,13 @@ const App = () => {
 
   const addContact = (event) => {
     event.preventDefault()
-    console.log("btn clicked", event.target)
-    const newPersons = [...persons].concat({name: newName})
-    setPersons(newPersons)
+    if (!persons.some(person => person.name === newName)) {
+      setPersons(persons.concat({name: newName}))
+      setNewName('')
+    } else {
+      alert(`${newName} is already added to phonebook`)
+    }
+
   }
 
   const handleContactChange = (event) => {
