@@ -6,29 +6,64 @@ const Button = (props) => {
   )
 }
 
+const PersonForm = ({newName, handleNameChange, newNumber, handleNumberChange, addContact}) => {
+  return (
+    <form>
+      <div>Name: <input value={newName} onChange={handleNameChange}/></div>
+      <div>number: <input value={newNumber} onChange={handleNumberChange}/></div>
+      <div><Button handleClick={addContact} text={'add'} type="submit" /></div>          
+    </form>  
+  )
+}
+
+const FilterByName = ({filteredString, handleFilterChange}) => {
+  return (
+    <input value={filteredString} onChange={handleFilterChange} placeholder="filter by name"/>
+  )
+}
+
+const Person = ({person}) => {
+  return (
+    <li>{person.name} {person.number}</li>
+  )
+}
+
+const PersonList = ({persons, filteringString}) => {
+  const filteredList = persons.filter(person => person.name.toLowerCase().includes(filteringString.toLowerCase()))
+  filteredList.sort((a,b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? true : false)
+
+  return (
+    <ul>
+      {filteredList.map(person => <Person key={person.name} person={person}/>)}
+    </ul>  
+  )
+}
+
 const App = () => {
   const [ persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456' },
     { name: 'Ada Lovelace', number: '39-44-5323523' },
-    { name: 'Dan Abramov', number: '12-43-234345' },
-    { name: 'Mary Poppendieck', number: '39-23-6423122' }
+    { name: 'Mary Poppendieck', number: '39-23-6423122' },
+    { name: 'Dan Abramov', number: '12-43-234345' }
   ]) 
+
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
-  const [ filterByName, setFilterByName ] = useState('')
+  const [ filteringString, setFilteringString ] = useState('')
 
   const addContact = (event) => {
     event.preventDefault()
-    if (!persons.some(person => person.name === newName)) {
-      const newPersons = persons.concat({name: newName, number: newNumber})
-      newPersons.sort((a,b) => (a.name > b.name) ? true : false)
-      setPersons(newPersons)
+    if (newName === '') {
+      alert(`Name cannot be empty`)
+    } else if (newNumber === '') {
+      alert(`Number cannot be empty`)
+    } else if (persons.some(person => person.name === newName)) {
+      alert(`${newName} is already added to phonebook`)
+    } else {
+      setPersons(persons.concat({name: newName, number: newNumber}))
       setNewName('')
       setNewNumber('')
-    } else {
-      alert(`${newName} is already added to phonebook`)
     }
-
   }
 
   const handleNameChange = (event) => {
@@ -43,23 +78,16 @@ const App = () => {
 
   const handleFilterChange = (event) => {
     console.log("filtering by name: ", event.target.value)
-    setFilterByName(event.target.value)
+    setFilteringString(event.target.value)
   }
 
   return (
     <div>
       <h1>Phonebook</h1>
-      <div>Filter by name: </div>
       <h2>Add a new number</h2>
-      <form>
-          <div>Name: <input value={newName} onChange={handleNameChange}/></div>
-          <div>number: <input value={newNumber} onChange={handleNumberChange}/></div>
-          <div><Button handleClick={addContact} text={'add'} type="submit" /></div>          
-      </form>
-      <h3>Numbers <input value={filterByName} onChange={handleFilterChange} placeholder="filter by name"/></h3>
-      <ul>
-        {persons.filter(person => person.name.toLowerCase().includes(filterByName.toLowerCase())).map(person => <li key={person.name}>{person.name} {person.number}</li>)}
-      </ul>
+      <PersonForm newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange} addContact={addContact}/>
+      <h3>Numbers <FilterByName filteringString={filteringString} handleFilterChange={handleFilterChange}/></h3>
+      <PersonList persons={persons} filteringString={filteringString}/>
     </div>
   )
 
