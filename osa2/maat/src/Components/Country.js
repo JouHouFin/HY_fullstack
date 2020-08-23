@@ -1,5 +1,7 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
+import axios from 'axios'
 import {Button} from './Misc'
+import WeatherInfo from './Weather'
 
 const CountryInfo = ({filteredCountries, filteringString, setSelectedCountries}) => {
   console.log(filteredCountries.length)
@@ -59,6 +61,43 @@ const CountryList = ({filteredCountries, handleShowButton}) => {
 }
 
 const SingleCountry = ({theCountry}) => {
+  const [weather, setWeather] = useState(0)
+  const api_key = process.env.REACT_APP_WEATHER_API_KEY
+  console.log("api key: ", api_key)
+  const weatherUrl = "http://api.weatherstack.com/current"
+  const params = {
+    access_key: api_key,
+    query: theCountry.capital
+  }
+
+  useEffect(() => {
+    console.log("fetching weather")
+    axios.get(weatherUrl, {params})
+    .then(response => {
+      console.log("weather fetched: ", response.data)
+      setWeather(response.data)
+
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  if (weather.current) {
+    return (
+      <div>
+        <SingleCountryBasicInfo theCountry={theCountry} />
+        <WeatherInfo loc={theCountry.capital} weather={weather} />
+      </div>    
+    ) 
+  } else {
+    return (
+      <div>
+        <SingleCountryBasicInfo theCountry={theCountry} />
+      </div>    
+    )
+  }
+}
+
+const SingleCountryBasicInfo = ({theCountry}) => {
   return (
     <div>
       <h2>{theCountry.name}</h2>
@@ -70,8 +109,8 @@ const SingleCountry = ({theCountry}) => {
       </ul>
       <b>Flag</b><br />
       <img src={theCountry.flag} width="10%" height="10%" alt="Flag of {theCountry.name}"></img>
-    </div>    
-  ) 
+    </div>
+  )
 }
 
 export default CountryInfo;
