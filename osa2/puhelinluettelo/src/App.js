@@ -79,7 +79,6 @@ const App = () => {
   const deleteContact = event => {
     event.preventDefault()
     const personId = event.target.value
-    useEffect(() => {
     personUtils.deletePerson(personId)
       .then(response => {
         setPersons(persons.filter(person => person.id !== personId))
@@ -87,7 +86,7 @@ const App = () => {
         setNewNumber('b')
       })
     
-  },[])}
+  }
 
   const handleNameChange = (event) => {
     console.log("new name: ", event.target.value)
