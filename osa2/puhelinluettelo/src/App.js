@@ -7,7 +7,7 @@ const PersonForm = ({ newName, handleNameChange, newNumber, handleNumberChange, 
     <form>
       <div>Name: <input value={newName} onChange={handleNameChange} /></div>
       <div>Number: <input value={newNumber} onChange={handleNumberChange} /></div>
-      <div><utils.Button handleClick={addContact} text={'add'} type="submit" value={null}/></div>
+      <div><utils.Button handleClick={addContact} text={'add'} type="submit" /></div>
     </form>
   )
 }
@@ -17,8 +17,7 @@ const Person = ({ person, deleteContact }) => {
     <tr>
       <td>{person.name}</td>
       <td>{person.number}</td>
-      <td>{person.id}</td>
-      <td><utils.Button handleClick={deleteContact} type={"submit"} text={"delete"} value={person.id} /></td>
+      <td><utils.Button handleClick={() => deleteContact(person.id, person.name)} type={"submit"} text={"delete"} /></td>
     </tr>
   )
 }
@@ -30,6 +29,7 @@ const PersonList = ({ persons, filteringString, deleteContact }) => {
   return (
     <table>
       <tbody>
+        <tr><th>Name</th><th>Number</th></tr>
         {filteredList.map(person => <Person key={person.name} person={person} deleteContact={deleteContact}/>)}
       </tbody>
     </table>
@@ -46,10 +46,10 @@ const App = () => {
   useEffect(() => {
     console.log("starting to fetch initial persons")
     personUtils.getPersons()
-      .then(initialPersons => {
-        console.log("promise fulfilled, initial persons fetched")
-        setPersons(initialPersons)
-      })
+    .then(initialPersons => {
+      console.log("promise fulfilled, initial persons fetched")
+      setPersons(initialPersons)
+    })
   }, [])
   console.log(`persons length: ${persons.length}`)
 
@@ -68,23 +68,22 @@ const App = () => {
       }
 
       personUtils.createPerson(newPersonObject)
-        .then(initialNewPerson => {
-          setPersons(persons.concat(initialNewPerson))
-          setNewName('')
-          setNewNumber('')
-        })
+      .then(initialNewPerson => {
+        setPersons(persons.concat(initialNewPerson))
+        setNewName('')
+        setNewNumber('')
+      })
     }
   }
 
-  const deleteContact = event => {
-    event.preventDefault()
-    const personId = event.target.value
-    personUtils.deletePerson(personId)
-      .then(response => {
-        setPersons(persons.filter(person => person.id !== personId))
-        setNewName('a')
-        setNewNumber('b')
+  const deleteContact = (personId, personName) => {
+    const result = window.confirm(`Want to delete ${personName} from phonebook?`);
+    if (result) {
+      personUtils.deletePerson(personId)
+      .then(() => {
+        setPersons(persons.filter(person => personId !== person.id))
       })
+    }
     
   }
 
