@@ -7,25 +7,32 @@ const PersonForm = ({ newName, handleNameChange, newNumber, handleNumberChange, 
     <form>
       <div>Name: <input value={newName} onChange={handleNameChange} /></div>
       <div>Number: <input value={newNumber} onChange={handleNumberChange} /></div>
-      <div><utils.Button handleClick={addContact} text={'add'} type="submit" /></div>
+      <div><utils.Button handleClick={addContact} text={'add'} type="submit" value={null}/></div>
     </form>
   )
 }
 
-const Person = ({ person }) => {
+const Person = ({ person, deleteContact }) => {
   return (
-    <li>{person.name} {person.number}</li>
+    <tr>
+      <td>{person.name}</td>
+      <td>{person.number}</td>
+      <td>{person.id}</td>
+      <td><utils.Button handleClick={deleteContact} type={"submit"} text={"delete"} value={person.id} /></td>
+    </tr>
   )
 }
 
-const PersonList = ({ persons, filteringString }) => {
+const PersonList = ({ persons, filteringString, deleteContact }) => {
   const filteredList = persons.filter(person => person.name.toLowerCase().includes(filteringString.toLowerCase()))
   filteredList.sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? true : false)
 
   return (
-    <ul>
-      {filteredList.map(person => <Person key={person.name} person={person} />)}
-    </ul>
+    <table>
+      <tbody>
+        {filteredList.map(person => <Person key={person.name} person={person} deleteContact={deleteContact}/>)}
+      </tbody>
+    </table>
   )
 }
 
@@ -69,6 +76,19 @@ const App = () => {
     }
   }
 
+  const deleteContact = event => {
+    event.preventDefault()
+    const personId = event.target.value
+    useEffect(() => {
+    personUtils.deletePerson(personId)
+      .then(response => {
+        setPersons(persons.filter(person => person.id !== personId))
+        setNewName('a')
+        setNewNumber('b')
+      })
+    
+  },[])}
+
   const handleNameChange = (event) => {
     console.log("new name: ", event.target.value)
     setNewName(event.target.value)
@@ -90,7 +110,7 @@ const App = () => {
       <h2>Add a new number</h2>
       <PersonForm newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange} addContact={addContact} />
       <h3>Numbers <utils.FilterInput filteringString={filteringString} handleFilterChange={handleFilterChange} /></h3>
-      <PersonList persons={persons} filteringString={filteringString} />
+      <PersonList persons={persons} filteringString={filteringString} deleteContact={deleteContact}/>
     </div>
   )
 
