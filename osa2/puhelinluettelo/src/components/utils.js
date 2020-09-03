@@ -22,4 +22,25 @@ const PersonForm = ({ newName, handleNameChange, newNumber, handleNumberChange, 
   )
 }
 
-export default {Button, FilterInput, PersonForm}
+const Notification = ({ message }) => {
+  if (message.msg === null) {
+    return null
+  }
+
+  let msgStyle = null
+
+  if (message.type === 'error') {
+    msgStyle = {padding: '4px', border: '1px solid black', backgroundColor: 'red',display:'inline-block'}
+  }
+  if (message.type === 'success') {
+    msgStyle = {padding: '4px', border: '1px solid black', backgroundColor: 'green',display:'inline-block'}
+  }
+
+  return (
+    <div className="error" style={msgStyle}>
+      {message.msg}
+    </div>
+  )
+}
+
+export default {Button, FilterInput, PersonForm, Notification}

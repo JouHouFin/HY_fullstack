@@ -8,12 +8,17 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filteringString, setFilteringString] = useState('')
+  const [notificationMessage, setNotificationMessage] = useState({msg: null, type: null})
 
-  const makePerson = () => { return { name: newName, number: newNumber } }  // helper function
-  const resetFields = () => { setNewName(''); setNewNumber('') }          // helper function
+  const makePerson = () => { return { name: newName, number: newNumber } }
+  const resetFields = () => { setNewName(''); setNewNumber('') } 
   const handleNameChange = event => { setNewName(event.target.value) }
   const handleNumberChange = event => { setNewNumber(event.target.value) }
   const handleFilterChange = event => { setFilteringString(event.target.value) }
+  const setNotificationMessageDelay = () => {
+    setTimeout(() => {          
+      setNotificationMessage({msg: null, type: null})}, 5000)
+  }
 
   useEffect(() => {
     personComms.getPersons()
@@ -25,10 +30,12 @@ const App = () => {
   const addContact = event => {
     event.preventDefault()
     if (newName === '') {
-      alert(`Name cannot be empty`)
+      setNotificationMessage({msg: 'Name cannot be empty', type: 'error'})
+      setNotificationMessageDelay()
 
     } else if (newNumber === '') {
-      alert(`Number cannot be empty`)
+      setNotificationMessage({msg: 'Number cannot be empty', type: 'error'})
+      setNotificationMessageDelay()
 
     } else if (persons.some(person => person.name === newName)) {
       const personToModifyId = persons.find(person => person.name === newName).id
@@ -40,6 +47,8 @@ const App = () => {
       .then(modifiedPerson => {
         setPersons(persons.map(person => person.id !== personToModifyId ? person : modifiedPerson))
         resetFields()
+        setNotificationMessage({msg: `${newName} modified`, type: 'success'})
+        setNotificationMessageDelay()
       })
       }
 
@@ -49,6 +58,8 @@ const App = () => {
       .then(initialNewPerson => {
         setPersons(persons.concat(initialNewPerson))
         resetFields()
+        setNotificationMessage({msg: `${newName} added`, type: 'success'})
+        setNotificationMessageDelay()
       })
 
     }
@@ -60,6 +71,8 @@ const App = () => {
       personComms.deletePerson(personId)
       .then(() => {
         setPersons(persons.filter(person => personId !== person.id))
+        setNotificationMessage({msg: `${personName} deleted`, type: 'success'})
+        setNotificationMessageDelay()
       })
     }
   }
@@ -69,6 +82,7 @@ const App = () => {
       <h1>Phonebook</h1>
       <h2>Add a new number</h2>
       <utils.PersonForm newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange} addContact={addContact} />
+      <utils.Notification message={notificationMessage} />
       <h3>Numbers <utils.FilterInput filteringString={filteringString} handleFilterChange={handleFilterChange} /></h3>
       <personComps.PersonList persons={persons} filteringString={filteringString} deleteContact={deleteContact}/>
     </div>
