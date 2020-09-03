@@ -1,114 +1,76 @@
 import React, { useState, useEffect } from 'react'
-import personUtils from './components/communications'
 import utils from './components/utils'
-
-const PersonForm = ({ newName, handleNameChange, newNumber, handleNumberChange, addContact }) => {
-  return (
-    <form>
-      <div>Name: <input value={newName} onChange={handleNameChange} /></div>
-      <div>Number: <input value={newNumber} onChange={handleNumberChange} /></div>
-      <div><utils.Button handleClick={addContact} text={'add'} type="submit" /></div>
-    </form>
-  )
-}
-
-const Person = ({ person, deleteContact }) => {
-  return (
-    <tr>
-      <td>{person.name}</td>
-      <td>{person.number}</td>
-      <td><utils.Button handleClick={() => deleteContact(person.id, person.name)} type={"submit"} text={"delete"} /></td>
-    </tr>
-  )
-}
-
-const PersonList = ({ persons, filteringString, deleteContact }) => {
-  const filteredList = persons.filter(person => person.name.toLowerCase().includes(filteringString.toLowerCase()))
-  filteredList.sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? true : false)
-
-  return (
-    <table>
-      <tbody>
-        <tr><th>Name</th><th>Number</th></tr>
-        {filteredList.map(person => <Person key={person.name} person={person} deleteContact={deleteContact}/>)}
-      </tbody>
-    </table>
-  )
-}
+import personComms from './services/communications'
+import personComps from './components/person'
 
 const App = () => {
   const [persons, setPersons] = useState([])
-
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filteringString, setFilteringString] = useState('')
 
+  const makePerson = () => { return { name: newName, number: newNumber } }  // helper function
+  const resetFields = () => { setNewName(''); setNewNumber('') }          // helper function
+  const handleNameChange = event => { setNewName(event.target.value) }
+  const handleNumberChange = event => { setNewNumber(event.target.value) }
+  const handleFilterChange = event => { setFilteringString(event.target.value) }
+
   useEffect(() => {
-    console.log("starting to fetch initial persons")
-    personUtils.getPersons()
+    personComms.getPersons()
     .then(initialPersons => {
-      console.log("promise fulfilled, initial persons fetched")
       setPersons(initialPersons)
     })
   }, [])
-  console.log(`persons length: ${persons.length}`)
 
   const addContact = event => {
     event.preventDefault()
     if (newName === '') {
       alert(`Name cannot be empty`)
+
     } else if (newNumber === '') {
       alert(`Number cannot be empty`)
+
     } else if (persons.some(person => person.name === newName)) {
-      alert(`${newName} is already added to phonebook`)
-    } else {
-      const newPersonObject = {
-        name: newName,
-        number: newNumber
+      const personToModifyId = persons.find(person => person.name === newName).id
+      const result = window.confirm(`${newName} is already added to phonebook. Change the number?`)
+
+      if (result) {
+      const modifiedPersonObject = makePerson()
+      personComms.updatePerson(personToModifyId, modifiedPersonObject)
+      .then(modifiedPerson => {
+        setPersons(persons.map(person => person.id !== personToModifyId ? person : modifiedPerson))
+        resetFields()
+      })
       }
 
-      personUtils.createPerson(newPersonObject)
+    } else {
+      const newPersonObject = makePerson()
+      personComms.createPerson(newPersonObject)
       .then(initialNewPerson => {
         setPersons(persons.concat(initialNewPerson))
-        setNewName('')
-        setNewNumber('')
+        resetFields()
       })
+
     }
   }
 
   const deleteContact = (personId, personName) => {
-    const result = window.confirm(`Want to delete ${personName} from phonebook?`);
+    const result = window.confirm(`Delete ${personName} from phonebook?`);
     if (result) {
-      personUtils.deletePerson(personId)
+      personComms.deletePerson(personId)
       .then(() => {
         setPersons(persons.filter(person => personId !== person.id))
       })
     }
-    
-  }
-
-  const handleNameChange = (event) => {
-    console.log("new name: ", event.target.value)
-    setNewName(event.target.value)
-  }
-
-  const handleNumberChange = (event) => {
-    console.log("new number: ", event.target.value)
-    setNewNumber(event.target.value)
-  }
-
-  const handleFilterChange = (event) => {
-    console.log("filtering by name: ", event.target.value)
-    setFilteringString(event.target.value)
   }
 
   return (
     <div>
       <h1>Phonebook</h1>
       <h2>Add a new number</h2>
-      <PersonForm newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange} addContact={addContact} />
+      <utils.PersonForm newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange} addContact={addContact} />
       <h3>Numbers <utils.FilterInput filteringString={filteringString} handleFilterChange={handleFilterChange} /></h3>
-      <PersonList persons={persons} filteringString={filteringString} deleteContact={deleteContact}/>
+      <personComps.PersonList persons={persons} filteringString={filteringString} deleteContact={deleteContact}/>
     </div>
   )
 
