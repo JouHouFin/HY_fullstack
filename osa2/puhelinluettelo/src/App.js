@@ -30,11 +30,11 @@ const App = () => {
   const addContact = event => {
     event.preventDefault()
     if (newName === '') {
-      setNotificationMessage({msg: 'Name cannot be empty', type: 'error'})
+      setNotificationMessage({msg: 'Name cannot be empty.', type: 'error'})
       setNotificationMessageDelay()
 
     } else if (newNumber === '') {
-      setNotificationMessage({msg: 'Number cannot be empty', type: 'error'})
+      setNotificationMessage({msg: 'Number cannot be empty.', type: 'error'})
       setNotificationMessageDelay()
 
     } else if (persons.some(person => person.name === newName)) {
@@ -47,7 +47,15 @@ const App = () => {
       .then(modifiedPerson => {
         setPersons(persons.map(person => person.id !== personToModifyId ? person : modifiedPerson))
         resetFields()
-        setNotificationMessage({msg: `${newName} modified`, type: 'success'})
+        setNotificationMessage({msg: `${newName} modified.`, type: 'success'})
+        setNotificationMessageDelay()
+      })
+      .catch(error => {
+        setNotificationMessage({msg: `The contact was already deleted from the server. Refreshing the contact list.`, type: 'error'})
+        personComms.getPersons()
+        .then(initialPersons => {
+          setPersons(initialPersons)
+        })        
         setNotificationMessageDelay()
       })
       }
@@ -58,7 +66,7 @@ const App = () => {
       .then(initialNewPerson => {
         setPersons(persons.concat(initialNewPerson))
         resetFields()
-        setNotificationMessage({msg: `${newName} added`, type: 'success'})
+        setNotificationMessage({msg: `${newName} added.`, type: 'success'})
         setNotificationMessageDelay()
       })
 
@@ -71,7 +79,7 @@ const App = () => {
       personComms.deletePerson(personId)
       .then(() => {
         setPersons(persons.filter(person => personId !== person.id))
-        setNotificationMessage({msg: `${personName} deleted`, type: 'success'})
+        setNotificationMessage({msg: `${personName} deleted.`, type: 'success'})
         setNotificationMessageDelay()
       })
     }
