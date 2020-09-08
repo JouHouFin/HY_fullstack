@@ -87,7 +87,7 @@ const App = () => {
 
   return (
     <div>
-      <h1>Phonebook</h1>
+      <h1>Phonebook app</h1>
       <h2>Add a new number</h2>
       <utils.PersonForm newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange} addContact={addContact} />
       <utils.Notification message={notificationMessage} />

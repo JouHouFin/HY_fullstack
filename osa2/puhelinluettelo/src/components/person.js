@@ -16,13 +16,14 @@ const PersonList = ({ persons, filteringString, deleteContact }) => {
     return ( <h4>No numbers yet. Add some using the form above.</h4>)
   }
   const filteredList = persons.filter(person => person.name.toLowerCase().includes(filteringString.toLowerCase()))
-  filteredList.sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? true : false)
-
+  const sortedList = filteredList.sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : -1)
+  console.log(sortedList)
+  
   return (
     <table>
       <tbody>
         <tr><th>Name</th><th>Phone number</th></tr>
-        {filteredList.map(person => <Person key={person.id} person={person} deleteContact={deleteContact}/>)}
+        {sortedList.map(person => <Person key={person.id} person={person} deleteContact={deleteContact}/>)}
       </tbody>
     </table>
   )
