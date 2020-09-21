@@ -1,3 +1,5 @@
+var _ = require('lodash')
+
 const dummy = (blogs) => {
   return 1
 }
@@ -45,8 +47,8 @@ const mostBlogs = (blogs) => {
     return allAuthors
   }, {})
 
-  const maxBlogs = Object.keys(blogsPerAuthor).reduce((a, b) => blogsPerAuthor[a] > blogsPerAuthor[b] ? blogsPerAuthor[a] : blogsPerAuthor[b])
-  const authorWithMaxBlogs = Object.keys(blogsPerAuthor).find(key => blogsPerAuthor[key] === maxBlogs)
+  const maxBlogs = _.max(_.values(blogsPerAuthor))
+  const authorWithMaxBlogs = _.findKey(blogsPerAuthor, (val) => val === maxBlogs )
 
   return (
     {
@@ -56,9 +58,44 @@ const mostBlogs = (blogs) => {
   )
 }
 
+const mostLikes = (blogs) => {
+  if (blogs.length === 0) {
+    return null
+  }
+
+  if (blogs.length === 1) {
+    return (
+      {
+        author: blogs[0].author,
+        likes: blogs[0].likes
+      }
+    )
+  }
+
+  const likesPerAuthor = blogs.reduce((allAuthors, currBlog) => {
+    if (currBlog.author in allAuthors) {
+      allAuthors[currBlog.author] += currBlog.likes
+    } else {
+      allAuthors[currBlog.author] = currBlog.likes
+    }
+    return allAuthors
+  }, {})
+
+  const maxLikes = _.max(_.values(likesPerAuthor))
+  const authorWithmaxLikes = _.findKey(likesPerAuthor, (val) => val === maxLikes )
+
+  return (
+    {
+      author: authorWithmaxLikes,
+      likes: maxLikes
+    }
+  )
+}
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
-  mostBlogs
+  mostBlogs,
+  mostLikes
 }
