@@ -1,0 +1,9 @@
+PUT http://localhost:3001/api/blogs/5f6347f60fe98e6280285564
+content-type: application/json
+
+{
+  "title": "Dickdick's Blog",
+  "author": "Dickdick Hardsteel",
+  "url": "http://dickdickhard.steel",
+  "likes": 666666
+}
