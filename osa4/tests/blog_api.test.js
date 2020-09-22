@@ -22,8 +22,23 @@ describe('GET /api/blogs', () => {
   })
 })
 
+describe('identification field correctness', () => {
+  test('returned blogs should have identifying field as "id", not "_id"', async () => {
+    const response = await api.get('/api/blogs')
+    expect(response.body[0].id).toBeDefined()
+  })
+})
+
+describe('unknown endpoint', () => {
+  test('trying to reach a nonexisting address should return 404 unknown endpoint error', async () => {
+    const response = await api.get('/api/bloggs')
+    expect(response.status).toBe(404)
+    expect(response.body).toEqual({ error: "unknown endpoint" })
+  })
+})
+
 describe('POST /api/blogs', () => {
-  test('a blog can be added', async () => {
+  test('a blog is added correctly with POST request', async () => {
     const blog = new Blog(
       {
         title: "testtitle",
@@ -36,6 +51,7 @@ describe('POST /api/blogs', () => {
     const response = await api.post('/api/blogs').send(blog)
     expect(response.status).toBe(201)
     expect(response.type).toBe('application/json')
+    expect(response.body.likes).toBe(1)
 
     const finalBlogs = await helper.allBlogs()
     expect(finalBlogs).toHaveLength(helper.initialBlogs.length + 1)
@@ -47,18 +63,34 @@ describe('POST /api/blogs', () => {
   })
 })
 
-describe('identification field correctness', () => {
-  test('returned blogs should have identifying field as "id", not "_id"', async () => {
-    const response = await api.get('/api/blogs')
-    expect(response.body[0].id).toBeDefined()
+describe('default likes', () => {
+  test('if number of likes is not defined, it should be set to zero by default', async () => {
+    const blog = new Blog(
+      {
+        title: "noLikesTitle",
+        author: "noLikesauthor",
+        url: "noLikesurl",
+      }
+    )
+
+    const response = await api.post('/api/blogs').send(blog)
+    expect(response.body.likes).toBe(0)
+    
   })
 })
 
-describe('unknown endpoint', () => {
-  test('trying to get nonexisting address should return 404 unknown endpoint error', async () => {
-    const response = await api.get('/api/bloggs')
-    expect(response.status).toBe(404)
-    expect(response.body).toEqual({error: "unknown endpoint"})
+describe('missing fields', () => {
+  test('if title and url are not defined, the answer should be 400 Bad request', async () => {
+    const blog = new Blog(
+      {
+        author: "noUrlOrTitleAuthor",
+        likes: 5556245234
+      }
+    )
+
+    const response = await api.post('/api/blogs').send(blog)
+    expect(response.status).toBe(400)
+    expect(response.res.statusMessage).toBe('Bad Request')
   })
 })
 
