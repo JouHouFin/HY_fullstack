@@ -4,7 +4,8 @@ const app = require('../app')
 const Blog = require('../models/blog')
 const helper = require('./test_helper')
 const api = supertest(app)
-describe('two notes saved initially', () => {
+
+describe('two blogs saved initially', () => {
 
   beforeEach(async () => {
     await Blog.deleteMany({})
@@ -54,14 +55,13 @@ describe('two notes saved initially', () => {
 
   describe('POST /api/blogs', () => {
     test('a blog is added correctly with POST request', async () => {
-      const blog = new Blog(
+      const blog =
         {
           title: 'testtitle',
           author: 'testauthor',
           url: 'testurl',
           likes: 1
         }
-      )
 
       const response = await api.post('/api/blogs').send(blog)
       expect(response.status).toBe(201)
@@ -92,12 +92,11 @@ describe('two notes saved initially', () => {
     })
 
     test('if title and url are not defined, the answer should be 400 Bad request', async () => {
-      const blog = new Blog(
+      const blog =
         {
           author: 'noUrlOrTitleAuthor',
           likes: 5556245234
         }
-      )
 
       const response = await api.post('/api/blogs').send(blog)
       expect(response.status).toBe(400)

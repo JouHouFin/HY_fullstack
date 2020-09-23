@@ -13,11 +13,22 @@ blogsRouter.get('/:id', async (request, response) => {
 
 blogsRouter.post('/', async (request, response) => {
   if (!request.body.title) {
-    response.status(400).end()
+    return response.status(400).end()
   }
-  !request.body.likes ? request.body.likes = 0 : request.body.likes
-  const blog = new Blog(request.body)
+  var lks = 0
+  if (request.body.likes) {
+    lks = request.body.likes
+  }
 
+  const blog = new Blog(
+    {
+      title: request.body.title,
+      author: request.body.author,
+      url: request.body.url,
+      likes: lks
+
+    }
+  )
 
   const result = await blog.save()
   response.status(201).json(result)
