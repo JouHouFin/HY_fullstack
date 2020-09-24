@@ -1,9 +1,10 @@
-const mongoose = require('mongoose')
 const supertest = require('supertest')
-const app = require('../app')
-const Blog = require('../models/blog')
+const mongoose = require('mongoose')
 const helper = require('./test_helper')
+const app = require('../app')
 const api = supertest(app)
+
+const Blog = require('../models/blog')
 
 describe('two blogs saved initially', () => {
 
@@ -12,7 +13,7 @@ describe('two blogs saved initially', () => {
     await Blog.insertMany(helper.initialBlogs)
   })
 
-  describe('GET /api/blogs', () => {
+  describe('GET all blogs', () => {
     test('right status code is returned', async () => {
       const response = await api.get('/api/blogs')
       expect(response.status).toBe(200)
