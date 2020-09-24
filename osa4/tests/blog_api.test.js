@@ -1,3 +1,5 @@
+const conf = require('../utils/config')
+const logger = require('../utils/logger')
 const supertest = require('supertest')
 const mongoose = require('mongoose')
 const helper = require('./test_helper')
@@ -5,6 +7,22 @@ const app = require('../app')
 const api = supertest(app)
 
 const Blog = require('../models/blog')
+
+beforeAll(async () => {
+  mongoose.connect(conf.MONGODB_URI,
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useFindAndModify: false,
+      useCreateIndex: true
+    })
+    .then(() => {
+      logger.info('connected to MongoDB')
+    })
+    .catch((error) => {
+      logger.error('error connection to MongoDB:', error.message)
+    })
+})
 
 describe('two blogs saved initially', () => {
 
@@ -79,17 +97,15 @@ describe('two blogs saved initially', () => {
     })
 
     test('if number of likes is not defined, it should be set to zero by default', async () => {
-      const blog = new Blog(
+      const blog =
         {
           title: 'noLikesTitle',
-          author: 'noLikesauthor',
-          url: 'noLikesurl',
+          author: 'noLikesAuthor',
+          url: 'noLikesUrl',
         }
-      )
 
       const response = await api.post('/api/blogs').send(blog)
       expect(response.body.likes).toBe(0)
-
     })
 
     test('if title and url are not defined, the answer should be 400 Bad request', async () => {

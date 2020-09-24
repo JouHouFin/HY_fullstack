@@ -15,17 +15,13 @@ blogsRouter.post('/', async (request, response) => {
   if (!request.body.title) {
     return response.status(400).end()
   }
-  var lks = 0
-  if (request.body.likes) {
-    lks = request.body.likes
-  }
 
   const blog = new Blog(
     {
       title: request.body.title,
       author: request.body.author,
       url: request.body.url,
-      likes: lks
+      likes: request.body.likes
 
     }
   )
