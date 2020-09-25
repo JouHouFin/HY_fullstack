@@ -7,7 +7,7 @@ const User = require('../models/user')
 const helper = require('./test_helper')
 const api = supertest(app)
 
-beforeAll(async () => {
+beforeAll(() => {
   mongoose.connect(conf.MONGODB_URI,
     {
       useNewUrlParser: true,

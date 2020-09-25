@@ -7,8 +7,9 @@ const app = require('../app')
 const api = supertest(app)
 
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
-beforeAll(async () => {
+beforeAll(() => {
   mongoose.connect(conf.MONGODB_URI,
     {
       useNewUrlParser: true,
@@ -27,8 +28,13 @@ beforeAll(async () => {
 describe('two blogs saved initially', () => {
 
   beforeEach(async () => {
+    await User.deleteMany({})
+    await User.insertMany(helper.initialUsers)
+
+    const usersInDB = await helper.allUsers()
+    const blogs = await helper.initialBlogs.map(blog => blog = { ...blog, user: usersInDB[0].id })
     await Blog.deleteMany({})
-    await Blog.insertMany(helper.initialBlogs)
+    await Blog.insertMany(blogs)
   })
 
   describe('GET all blogs', () => {
@@ -74,12 +80,14 @@ describe('two blogs saved initially', () => {
 
   describe('POST /api/blogs', () => {
     test('a blog is added correctly with POST request', async () => {
+      const usersInDB = await helper.allUsers()
       const blog =
         {
           title: 'testtitle',
           author: 'testauthor',
           url: 'testurl',
-          likes: 1
+          likes: 1,
+          user: usersInDB[0].id
         }
 
       const response = await api.post('/api/blogs').send(blog)
@@ -97,11 +105,13 @@ describe('two blogs saved initially', () => {
     })
 
     test('if number of likes is not defined, it should be set to zero by default', async () => {
+      const usersInDB = await helper.allUsers()
       const blog =
         {
           title: 'noLikesTitle',
           author: 'noLikesAuthor',
           url: 'noLikesUrl',
+          user: usersInDB[0].id
         }
 
       const response = await api.post('/api/blogs').send(blog)

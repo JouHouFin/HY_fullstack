@@ -2,8 +2,9 @@ POST http://localhost:3001/api/blogs
 content-type: application/json
 
 {
-  "title": "Dick's Blog",
-  "author": "Dick Hardsteel",
-  "url": "http://dickhard.steel",
-  "likes": 666
+  "title": "Jannu's Blog",
+  "author": "Jannu Peruskaveri",
+  "url": "https://jannu.vaan",
+  "likes": 123123123123123123123,
+  "user": "5f6de2e6606bb647cece4fe1"
 }
