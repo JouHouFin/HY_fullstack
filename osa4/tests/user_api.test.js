@@ -48,7 +48,7 @@ describe('two users saved initially', () => {
   describe('POST /api/users', () => {
     test('right status code is returned and number of users should increase', async () => {
       const user = {
-        userName: 'usrNm',
+        username: 'usrNm',
         name: 'nm',
         password: 'verystrongpassword'
       }
@@ -60,7 +60,7 @@ describe('two users saved initially', () => {
 
     test('user with too short username cannot be created', async () => {
       const user = {
-        userName: 'un',
+        username: 'un',
         name: 'nm',
         password: 'verystrongpassword'
       }
@@ -73,7 +73,7 @@ describe('two users saved initially', () => {
 
     test('user with too short password cannot be created', async () => {
       const user = {
-        userName: 'veryUniqueUsername',
+        username: 'veryUniqueUsername',
         name: 'Dick Hardsteel',
         password: 'pw'
       }
@@ -86,7 +86,7 @@ describe('two users saved initially', () => {
 
     test('multiple users with same username cannot be created', async () => {
       const user = {
-        userName: 'veryUniqueUsername',
+        username: 'veryUniqueUsername',
         name: 'Dick Hardsteel',
         password: 'password'
       }
@@ -95,7 +95,7 @@ describe('two users saved initially', () => {
 
       const response2 = await api.post('/api/users').send(user)
       expect(response2.status).toBe(400)
-      expect(response2.body.error).toBe('Error, expected `userName` to be unique.')
+      expect(response2.body.error).toBe('Error, expected `username` to be unique.')
 
       const usersInDB = await helper.allUsers()
       expect(usersInDB.length).toBe(helper.initialUsers.length + 1)

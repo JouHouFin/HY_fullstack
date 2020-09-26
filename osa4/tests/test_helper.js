@@ -1,6 +1,6 @@
 const Blog = require('../models/blog')
 const User = require('../models/user')
-
+const bcrypt = require('bcrypt')
 const initialBlogs = [
   {
     title: 'React patterns',
@@ -18,12 +18,12 @@ const initialBlogs = [
 
 const initialUsers = [
   {
-    userName: "testUser1",
+    username: "testUser1",
     name: "testName1",
-    password: "testpw1" 
+    password: "testpw1"
   },
   {
-    userName: "testUser2",
+    username: "testUser2",
     name: "testName2",
     password: "testpw2"
   }
