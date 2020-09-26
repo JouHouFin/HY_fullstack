@@ -1,10 +1,10 @@
 POST http://localhost:3001/api/blogs
-content-type: application/json
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3R1c2VyIiwiaWQiOiI1ZjZmMTlhNDJkN2I1ZTFlYjc1MzBjOTciLCJpYXQiOjE2MDExMTc1Mzh9.vYUweKmGkx6L8AwhUGf5YbPz0QqDXVwGLXqIagTZ5ns
 
 {
-  "title": "Jannu's Blog",
-  "author": "Jannu Peruskaveri",
-  "url": "https://jannu.vaan",
-  "likes": 123123123123123123123,
-  "user": "5f6de2e6606bb647cece4fe1"
+  "title": "Testusers Tokenblog",
+  "author": "Testuser with Token",
+  "url": "https://Testuser.Token",
+  "likes": 70134
 }
