@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken')
 const Blog = require('../models/blog')
 const User = require('../models/user')
 const process = require('process')
+const { findById } = require('../models/user')
 
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
@@ -19,10 +20,10 @@ blogsRouter.post('/', async (request, response) => {
     return response.status(400).json({ error: 'title must be specified' })
   }
   if (!request.body.url) {
-    return response.status(400).end({ error: 'url must be specified' })
+    return response.status(400).json({ error: 'url must be specified' })
   }
   if (!request.body.url) {
-    return response.status(400).end({ error: 'user must be specified' })
+    return response.status(400).json({ error: 'user must be specified' })
   }
 
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
@@ -48,8 +49,23 @@ blogsRouter.post('/', async (request, response) => {
 })
 
 blogsRouter.delete('/:id', async (request, response) => {
-  await Blog.findByIdAndDelete(request.params.id)
-  response.status(204).end()
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
+  const user = await User.findById(decodedToken.id)
+
+  if (!request.token || !decodedToken.id) {
+    return response.status(401).json({ error: 'token missing or invalid' })
+  }
+  const blog = await Blog.findById(request.params.id)
+
+  if (!blog) {
+    return response.status(401).json({ error: 'invalid blog id' })
+  }
+
+  if ( blog.user.toString() === user._id.toString() ){
+    await Blog.findByIdAndDelete(request.params.id)
+    return response.status(204).end()
+  }
+  response.status(401).json({ error: 'unauthorized operation: trying to delete someone other´s blog?' })
 })
 
 blogsRouter.put('/:id', async (request, response) => {
