@@ -21,7 +21,7 @@ const unknownEndpoint = (request, response) => {
 }
 
 const errorHandler = (error, request, response, next) => {
-  logger.error(error.message)
+  logger.error(error.name, ': ', error.message)
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
@@ -33,7 +33,7 @@ const errorHandler = (error, request, response, next) => {
   }
 
   if (error.name === 'JsonWebTokenError') {
-    return response.status(400).send({ error: 'token missing or invalid' })
+    return response.status(401).send({ error: 'token missing or invalid' })
   }
 
   next(error)

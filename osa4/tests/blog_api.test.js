@@ -29,7 +29,8 @@ describe('two blogs saved initially', () => {
 
   beforeEach(async () => {
     await User.deleteMany({})
-    await User.insertMany(helper.initialUsers)
+    await api.post('/api/users').send(helper.initialUsers[0])
+    await api.post('/api/users').send(helper.initialUsers[1])
 
     const usersInDB = await helper.allUsers()
     const blogs = await helper.initialBlogs.map(blog => blog = { ...blog, user: usersInDB[0].id })
@@ -81,6 +82,13 @@ describe('two blogs saved initially', () => {
   describe('POST /api/blogs', () => {
     test('a blog is added correctly with POST request', async () => {
       const usersInDB = await helper.allUsers()
+      const loginCredentials = {
+        username: helper.initialUsers[0].username,
+        password: helper.initialUsers[0].password
+      }
+
+      const login = await api.post('/api/login').send(loginCredentials)
+      const token = login.body.token
       const blog =
         {
           title: 'testtitle',
@@ -90,7 +98,7 @@ describe('two blogs saved initially', () => {
           user: usersInDB[0].id
         }
 
-      const response = await api.post('/api/blogs').send(blog)
+      const response = await api.post('/api/blogs').set('Authorization', `bearer ${token}`).send(blog)
       expect(response.status).toBe(201)
       expect(response.type).toBe('application/json')
       expect(response.body.likes).toBe(1)
@@ -104,8 +112,35 @@ describe('two blogs saved initially', () => {
       )
     })
 
+    test('a blog cannot be added without a valid token', async () => {
+      const usersInDB = await helper.allUsers()
+
+      const blog =
+        {
+          title: 'testtitle',
+          author: 'testauthor',
+          url: 'testurl',
+          likes: 1,
+          user: usersInDB[0].id
+        }
+
+      const response = await api.post('/api/blogs').send(blog)
+      expect(response.status).toBe(401)
+      expect(response.body).toEqual({ error: 'token missing or invalid' })
+
+      const finalBlogs = await helper.allBlogs()
+      expect(finalBlogs).toHaveLength(helper.initialBlogs.length)
+    })
+
     test('if number of likes is not defined, it should be set to zero by default', async () => {
       const usersInDB = await helper.allUsers()
+      const loginCredentials = {
+        username: helper.initialUsers[0].username,
+        password: helper.initialUsers[0].password
+      }
+
+      const login = await api.post('/api/login').send(loginCredentials)
+      const token = login.body.token
       const blog =
         {
           title: 'noLikesTitle',
@@ -114,7 +149,7 @@ describe('two blogs saved initially', () => {
           user: usersInDB[0].id
         }
 
-      const response = await api.post('/api/blogs').send(blog)
+      const response = await api.post('/api/blogs').set('Authorization', `bearer ${token}`).send(blog)
       expect(response.body.likes).toBe(0)
     })
 
@@ -133,10 +168,16 @@ describe('two blogs saved initially', () => {
 
   describe('a blog can be deleted', () => {
     test('succeeding deletion should be responded with status code 204 and number of blogs should be one less', async () => {
-
       const blogsAtStart = await helper.allBlogs()
+      const loginCredentials = {
+        username: helper.initialUsers[0].username,
+        password: helper.initialUsers[0].password
+      }
 
-      const response = await api.delete(`/api/blogs/${blogsAtStart[0].id}`).send()
+      const login = await api.post('/api/login').send(loginCredentials)
+      const token = login.body.token
+
+      const response = await api.delete(`/api/blogs/${blogsAtStart[0].id}`).set('Authorization', `bearer ${token}`).send()
       expect(response.status).toBe(204)
 
       const blogsAtEnd = await helper.allBlogs()
