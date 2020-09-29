@@ -74,7 +74,7 @@ const App = () => {
       <Notification notification={notification} />
       {user === null ? null : <UserInfo user={user} logout={handleLogout}/>}
       {user === null ? <LoginForm login={handleLogin} loginInput={loginInput}/> : null}
-      {user === null ? null : <Togglable buttonLabel='Add new blog' ref={blogFormRef}><BlogForm addBlog={addBlog} /></Togglable>}
+      {user === null ? null : <Togglable buttonLabel='Add new blog' cancelLabel='Cancel' ref={blogFormRef}><BlogForm addBlog={addBlog} /></Togglable>}
       {user === null ? null : <Bloglist blogs={blogs} />}
     </div>
   )
