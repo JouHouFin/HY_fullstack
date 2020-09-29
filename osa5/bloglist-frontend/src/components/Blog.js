@@ -1,5 +1,4 @@
 import React, {useState, useRef} from 'react'
-import blogService from '../services/blogs'
 
 const Blog = ({ blog }) => (
   <div>
@@ -16,7 +15,7 @@ const Bloglist = ({ blogs }) => {
   )
 }
 
-const BlogForm = ({ user, setUser, blogs, setBlogs, hn }) => {
+const BlogForm = ({addBlog}) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -28,20 +27,11 @@ const BlogForm = ({ user, setUser, blogs, setBlogs, hn }) => {
 
   const handleBlogAdd = async (event) => {
     event.preventDefault()
-    try {
-      blogService.setToken(user.token)
-      const addedBlog = await blogService.create({ title, author, url })
-      setBlogs(blogs.concat(addedBlog))
-      hn(`Blog "${title}" added successfully`, "success")
-      setTitle('')
-      setAuthor('')
-      setUrl('')
-      handleFocus()
-    } catch (error) {
-      hn(error.response.data.error, "error")
-      handleFocus()
-    }
-    
+    addBlog({title, author, url})
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+    handleFocus()
   }
 
   return (

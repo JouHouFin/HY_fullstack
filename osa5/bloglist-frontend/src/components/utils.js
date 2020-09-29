@@ -1,24 +1,35 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-const LoginForm = ({ un, setUn, pw, setPw, hl, loginInput }) => {
+const LoginForm = ({ login, loginInput }) => {
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+
+  const handleLogin = async (event) => {
+    event.preventDefault()
+    login({username, password})
+    setUsername('')
+    setPassword('')
+  }
+
   return (
-    <form onSubmit={hl}>
+    <form onSubmit={handleLogin}>
     <div>
       Username:
-        <input autoFocus={true} value={un}
+        <input autoFocus={true} 
+          value={username}
           id="username"
           type="text"
-          onChange={({ target }) => setUn(target.value)}
+          onChange={({ target }) => setUsername(target.value)}
           ref={loginInput}
         />
     </div>
     <div>
       Password:
         <input
-          value={pw}
+          value={password}
           id="password"
           type="password"
-          onChange={({ target }) => setPw(target.value)}
+          onChange={({ target }) => setPassword(target.value)}
         />
     </div>
     <button type="submit">Log me in</button>
@@ -37,16 +48,10 @@ const Notification = ({ notification }) => {
   )
 }
 
-const UserInfo = ({user, setUser, hn}) => {
-  const handleLogout = () => {
-    window.localStorage.clear()
-    setUser(null)
-    hn("Logout successful", "success")
-  }
-
+const UserInfo = ({ user, logout }) => {
   return (
     <div>
-      {user.name} is currently logged in <button onClick={handleLogout}>Log me out</button>
+      {user.name} is currently logged in <button onClick={logout}>Log me out</button>
     </div>
   )
 }

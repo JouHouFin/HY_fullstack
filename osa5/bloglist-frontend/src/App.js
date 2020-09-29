@@ -3,14 +3,14 @@ import { BlogForm, Bloglist } from './components/Blog'
 import { LoginForm, Notification, UserInfo } from './components/utils'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [notification, setNotification] = useState(null)
 
+  const blogFormRef = useRef(null)
   const loginInput = useRef(null)
   const handleFocus = () => {
     loginInput.current.focus()
@@ -37,16 +37,11 @@ const App = () => {
     }, 4000);
   }
 
-
-
-  const handleLogin = async (event) => {
-    event.preventDefault()
+  const handleLogin = async (blogObject) => {
     try {
-      const user = await loginService.login({ username, password })
+      const user = await loginService.login(blogObject)
       setUser(user)
       handleNotification("Login successful", "success")
-      setUsername('')
-      setPassword('')
       window.localStorage.setItem('loggedInUser', JSON.stringify(user))
     } catch (error) {
       handleNotification("Wrong username or password", "error")
@@ -54,13 +49,32 @@ const App = () => {
     }
   }
 
+  const addBlog = async (blogObject) => {
+    try {
+      blogService.setToken(user.token)
+      const addedBlog = await blogService.create(blogObject)
+      setBlogs(blogs.concat(addedBlog))
+      blogFormRef.current.toggleVisibility()
+      handleNotification(`Blog "${blogObject.title}" added successfully`, "success")
+    } catch (error) {
+      handleNotification(error.response.data.error, "error")
+    }
+  }
+
+  const handleLogout = () => {
+    window.localStorage.clear()
+    setUser(null)
+    handleNotification("Logout successful", "success")
+  }
+
   return (
     <div>
       <h2>Blog app</h2>
+      {notification === null ? <div><br/></div> : null}
       <Notification notification={notification} />
-      {user === null ? null : <UserInfo user={user} setUser={setUser} hn={handleNotification}/>}
-      {user === null ? <LoginForm un={username} setUn={setUsername} pw={password} setPw={setPassword} hl={handleLogin} loginInput={loginInput} /> : null}
-      {user === null ? null : <BlogForm user={user} setUser={setUser} blogs={blogs} setBlogs={setBlogs} hn={handleNotification} />}
+      {user === null ? null : <UserInfo user={user} logout={handleLogout}/>}
+      {user === null ? <LoginForm login={handleLogin} loginInput={loginInput}/> : null}
+      {user === null ? null : <Togglable buttonLabel='Add new blog' ref={blogFormRef}><BlogForm addBlog={addBlog} /></Togglable>}
       {user === null ? null : <Bloglist blogs={blogs} />}
     </div>
   )
