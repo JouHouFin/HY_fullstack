@@ -1,6 +1,6 @@
 import React, {useState, useRef} from 'react'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, addLike }) => {
   const [detailsVisible, setDetailsVisible] = useState(false)
   const blogStyle = {
     borderBottom: "2px solid black", 
@@ -16,6 +16,9 @@ const Blog = ({ blog }) => {
     paddingTop: "3px",
     marginBottom: "5px"
   }
+  const addOneLike = () => {
+    addLike(blog)
+  }
 
   return (
   <div style={blogStyle} >
@@ -23,7 +26,7 @@ const Blog = ({ blog }) => {
     {detailsVisible ? 
       <div>
         Author: {blog.author}<br />
-        Likes: {blog.likes} <button style={{border: "2px solid black"}}>Like</button><br />
+        Likes: {blog.likes} <button style={{border: "2px solid black"}} onClick={addOneLike} >Like</button><br />
         URL: <a href={blog.url}>{blog.url}</a><br />
         Added by: {blog.user.name}
       </div> 
@@ -31,11 +34,11 @@ const Blog = ({ blog }) => {
   </div>
 )}
 
-const Bloglist = ({ blogs }) => {
+const Bloglist = ({ blogs, addLike }) => {
   return (
     <div>
       <h2>Blogs</h2>
-      {blogs.map(blog => <Blog key={blog.id} blog={blog} />)}
+      {blogs.map(blog => <Blog key={blog.id} blog={blog} addLike={addLike} />)}
     </div>
   )
 }

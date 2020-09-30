@@ -61,6 +61,25 @@ const App = () => {
     }
   }
 
+  const addLike = async (blogObject) => {
+    const likesPlusOne = {
+      user: blogObject.user.id,
+      author: blogObject.author,
+      title: blogObject.title,
+      url: blogObject.url,
+      likes: blogObject.likes + 1,
+    }
+    try {
+      blogService.setToken(user.token)
+      const updatedBlog = await blogService.update(likesPlusOne, blogObject.id)
+      const newBlogs  = blogs.map(blog => blog.id === blogObject.id ? updatedBlog : blog)
+      setBlogs(newBlogs)
+      handleNotification(`+1 to "${blogObject.title}"`, "success")
+    } catch (error) {
+      handleNotification(error.response.data.error, "error")
+    }
+  }
+
   const handleLogout = () => {
     window.localStorage.clear()
     setUser(null)
@@ -75,7 +94,7 @@ const App = () => {
       {user === null ? null : <UserInfo user={user} logout={handleLogout}/>}
       {user === null ? <LoginForm login={handleLogin} loginInput={loginInput}/> : null}
       {user === null ? null : <Togglable buttonLabel='Add new blog' cancelLabel='Cancel' ref={blogFormRef}><BlogForm addBlog={addBlog} /></Togglable>}
-      {user === null ? null : <Bloglist blogs={blogs} />}
+      {user === null ? null : <Bloglist blogs={blogs} addLike={addLike}/>}
     </div>
   )
 }
