@@ -34,17 +34,17 @@ const App = () => {
     setNotification({ msg: msg, type: type })
     setTimeout(() => {
       setNotification(null)
-    }, 4000);
+    }, 4000)
   }
 
   const handleLogin = async (blogObject) => {
     try {
       const user = await loginService.login(blogObject)
       setUser(user)
-      handleNotification("Login successful", "success")
+      handleNotification('Login successful', 'success')
       window.localStorage.setItem('loggedInUser', JSON.stringify(user))
     } catch (error) {
-      handleNotification("Wrong username or password", "error")
+      handleNotification('Wrong username or password', 'error')
       handleFocus()
     }
   }
@@ -55,9 +55,9 @@ const App = () => {
       const addedBlog = await blogService.create(blogObject)
       setBlogs(blogs.concat(addedBlog))
       blogFormRef.current.toggleVisibility()
-      handleNotification(`Blog "${blogObject.title}" added successfully`, "success")
+      handleNotification(`Blog "${blogObject.title}" added successfully`, 'success')
     } catch (error) {
-      handleNotification(error.response.data.error, "error")
+      handleNotification(error.response.data.error, 'error')
     }
   }
 
@@ -74,9 +74,9 @@ const App = () => {
       const updatedBlog = await blogService.update(likesPlusOne, blogObject.id)
       const newBlogs  = blogs.map(blog => blog.id === blogObject.id ? updatedBlog : blog)
       setBlogs(newBlogs)
-      handleNotification(`+1 to "${blogObject.title}"`, "success")
+      handleNotification(`+1 to "${blogObject.title}"`, 'success')
     } catch (error) {
-      handleNotification(error.response.data.error, "error")
+      handleNotification(error.response.data.error, 'error')
     }
   }
 
@@ -86,17 +86,17 @@ const App = () => {
       await blogService.remove(blogObject.id)
       const newBlogs  = blogs.filter(blog => blog.id !== blogObject.id)
       setBlogs(newBlogs)
-      handleNotification(`Blog "${blogObject.title}" by ${blogObject.author} removed`, "success")
+      handleNotification(`Blog "${blogObject.title}" by ${blogObject.author} removed`, 'success')
     } catch (error) {
       console.log(error)
-      handleNotification(error.response.data.error, "error")
+      handleNotification(error.response.data.error, 'error')
     }
   }
 
   const handleLogout = () => {
     window.localStorage.clear()
     setUser(null)
-    handleNotification("Logout successful", "success")
+    handleNotification('Logout successful', 'success')
   }
 
   return (

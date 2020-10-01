@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 
 const LoginForm = ({ login, loginInput }) => {
   const [username, setUsername] = useState('')
@@ -6,24 +7,24 @@ const LoginForm = ({ login, loginInput }) => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    login({username, password})
+    login({ username, password })
     setUsername('')
     setPassword('')
   }
 
   return (
     <form onSubmit={handleLogin}>
-    <div>
+      <div>
       Username:
-        <input autoFocus={true} 
+        <input autoFocus={true}
           value={username}
           id="username"
           type="text"
           onChange={({ target }) => setUsername(target.value)}
           ref={loginInput}
         />
-    </div>
-    <div>
+      </div>
+      <div>
       Password:
         <input
           value={password}
@@ -31,18 +32,23 @@ const LoginForm = ({ login, loginInput }) => {
           type="password"
           onChange={({ target }) => setPassword(target.value)}
         />
-    </div>
-    <button type="submit">Log me in</button>
+      </div>
+      <button type="submit">Log me in</button>
     </form>
   )
+}
+
+LoginForm.propTypes = {
+  login: PropTypes.func.isRequired,
+  loginInput: PropTypes.object.isRequired
 }
 
 const Notification = ({ notification }) => {
   if (!notification) return null
 
-  const style = notification.type === "error" ?
-    { backgroundColor: "pink", border: "2px solid red", padding: "3px", width: "50%" } :
-    { backgroundColor: "lightGreen", border: "2px solid green", padding: "3px", width: "50%" }
+  const style = notification.type === 'error' ?
+    { backgroundColor: 'pink', border: '2px solid red', padding: '3px', width: '50%' } :
+    { backgroundColor: 'lightGreen', border: '2px solid green', padding: '3px', width: '50%' }
   return (
     notification === null ? null : <h4 style={style}>{notification.msg}</h4>
   )
@@ -56,4 +62,9 @@ const UserInfo = ({ user, logout }) => {
   )
 }
 
-export {LoginForm, Notification, UserInfo}
+UserInfo.propTypes = {
+  user: PropTypes.object.isRequired,
+  logout: PropTypes.func.isRequired
+}
+
+export { LoginForm, Notification, UserInfo }

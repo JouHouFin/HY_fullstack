@@ -1,22 +1,23 @@
-import React, {useState, useRef} from 'react'
+import React, { useState, useRef } from 'react'
+import PropTypes from 'prop-types'
 
 const Blog = ({ user, blog, addLike, deleteBlog }) => {
   const [detailsVisible, setDetailsVisible] = useState(false)
   const blogStyle = {
-    borderBottom: "2px solid black", 
-    borderLeft: "2px solid black", 
-    borderRight: "2px solid black", 
-    paddingLeft: "3px", 
-    width: "50%"
+    borderBottom: '2px solid black',
+    borderLeft: '2px solid black',
+    borderRight: '2px solid black',
+    paddingLeft: '3px',
+    width: '50%'
   }
   const titleStyle = {
-    fontWeight: "bold", 
-    textDecoration: "underline", 
-    color: "#123478", 
-    paddingTop: "3px",
-    marginBottom: "5px"
+    fontWeight: 'bold',
+    textDecoration: 'underline',
+    color: '#123478',
+    paddingTop: '3px',
+    marginBottom: '5px'
   }
-  const buttonStyle = { border: "2px solid black", margin: "2px" }
+  const buttonStyle = { border: '2px solid black', margin: '2px' }
 
   const addOneLike = () => {
     addLike(blog)
@@ -30,19 +31,26 @@ const Blog = ({ user, blog, addLike, deleteBlog }) => {
   }
 
   return (
-  <div style={blogStyle} >
-    <p style={titleStyle} onClick={() => setDetailsVisible(!detailsVisible)}>{blog.title}</p>
-    {detailsVisible ? 
-      <div>
+    <div style={blogStyle} >
+      <p style={titleStyle} onClick={() => setDetailsVisible(!detailsVisible)}>{blog.title}</p>
+      {detailsVisible ?
+        <div>
         Author: {blog.author}<br />
         Likes: {blog.likes} <button style={buttonStyle} onClick={addOneLike} >Like</button><br />
         URL: <a href={blog.url}>{blog.url}</a><br />
         Added by: {blog.user.name}<br />
-        {user.username === blog.user.username ? <button style={buttonStyle} onClick={deleteThis}>Remove this blog</button> : null}
-      </div> 
-    : null}
-  </div>
-)}
+          {user.username === blog.user.username ? <button style={buttonStyle} onClick={deleteThis}>Remove this blog</button> : null}
+        </div>
+        : null}
+    </div>
+  )}
+
+Blog.propTypes = {
+  user: PropTypes.object.isRequired,
+  blog: PropTypes.object.isRequired,
+  addLike: PropTypes.func.isRequired,
+  deleteBlog: PropTypes.func.isRequired
+}
 
 const Bloglist = ({ user, blogs, addLike, deleteBlog }) => {
   blogs.sort((a,b) => a.likes < b.likes ? 1 : -1)
@@ -54,7 +62,14 @@ const Bloglist = ({ user, blogs, addLike, deleteBlog }) => {
   )
 }
 
-const BlogForm = ({addBlog}) => {
+Bloglist.propTypes = {
+  user: PropTypes.object.isRequired,
+  blogs: PropTypes.array.isRequired,
+  addLike: PropTypes.func.isRequired,
+  deleteBlog: PropTypes.func.isRequired
+}
+
+const BlogForm = ({ addBlog }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -66,7 +81,7 @@ const BlogForm = ({addBlog}) => {
 
   const handleBlogAdd = async (event) => {
     event.preventDefault()
-    addBlog({title, author, url})
+    addBlog({ title, author, url })
     setTitle('')
     setAuthor('')
     setUrl('')
@@ -75,12 +90,12 @@ const BlogForm = ({addBlog}) => {
 
   return (
     <div>
-      
+
       <h2>Add a blog</h2>
       <form onSubmit={handleBlogAdd}>
         <div>
           Title:
-            <input value={title}
+          <input value={title}
             type="text"
             onChange={({ target }) => setTitle(target.value)}
             ref={blogInput}
@@ -88,7 +103,7 @@ const BlogForm = ({addBlog}) => {
         </div>
         <div>
           Author:
-            <input
+          <input
             value={author}
             type="text"
             onChange={({ target }) => setAuthor(target.value)}
@@ -96,7 +111,7 @@ const BlogForm = ({addBlog}) => {
         </div>
         <div>
           Address:
-            <input
+          <input
             value={url}
             type="text"
             onChange={({ target }) => setUrl(target.value)}
@@ -108,4 +123,8 @@ const BlogForm = ({addBlog}) => {
   )
 }
 
-export {Blog, BlogForm, Bloglist }
+BlogForm.propTypes = {
+  addBlog: PropTypes.func.isRequired
+}
+
+export { Blog, BlogForm, Bloglist }
