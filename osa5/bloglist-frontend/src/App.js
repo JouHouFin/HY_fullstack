@@ -80,6 +80,19 @@ const App = () => {
     }
   }
 
+  const deleteBlog = async (blogObject) => {
+    try {
+      blogService.setToken(user.token)
+      await blogService.remove(blogObject.id)
+      const newBlogs  = blogs.filter(blog => blog.id !== blogObject.id)
+      setBlogs(newBlogs)
+      handleNotification(`Blog "${blogObject.title}" by ${blogObject.author} removed`, "success")
+    } catch (error) {
+      console.log(error)
+      handleNotification(error.response.data.error, "error")
+    }
+  }
+
   const handleLogout = () => {
     window.localStorage.clear()
     setUser(null)
@@ -94,7 +107,7 @@ const App = () => {
       {user === null ? null : <UserInfo user={user} logout={handleLogout}/>}
       {user === null ? <LoginForm login={handleLogin} loginInput={loginInput}/> : null}
       {user === null ? null : <Togglable buttonLabel='Add new blog' cancelLabel='Cancel' ref={blogFormRef}><BlogForm addBlog={addBlog} /></Togglable>}
-      {user === null ? null : <Bloglist blogs={blogs} addLike={addLike}/>}
+      {user === null ? null : <Bloglist blogs={blogs} addLike={addLike} user={user} deleteBlog={deleteBlog}/>}
     </div>
   )
 }
