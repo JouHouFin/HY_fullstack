@@ -40,3 +40,28 @@ test('all details are shown when title is pressed', () => {
   expect(component.container).toHaveTextContent('URL: url')
   expect(component.container).toHaveTextContent('Likes: 0')
 })
+
+test('two clicks to the addLike function results in two function calls', () => {
+  const blog = {
+    title: 'title',
+    author: 'author',
+    url: 'url',
+    likes: 0,
+    user: { username: 'username' }
+  }
+  const user = { username: 'username' }
+  const mockAddLike = jest.fn()
+
+  const component = render(
+    <Blog blog={blog} user={user} addLike={mockAddLike}/>
+  )
+
+  const clickableTitle = component.getByText('title by author')
+  fireEvent.click(clickableTitle)
+
+  const likeButton = component.getByText('Like')
+  fireEvent.click(likeButton)
+  fireEvent.click(likeButton)
+
+  expect(mockAddLike.mock.calls).toHaveLength(2)
+})
