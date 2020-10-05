@@ -15,7 +15,7 @@ const Blog = ({ user, blog, addLike, deleteBlog }) => {
     textDecoration: 'underline',
     color: '#123478',
     paddingTop: '3px',
-    marginBottom: '5px'
+    marginBottom: '8px'
   }
   const buttonStyle = { border: '2px solid black', margin: '2px' }
 
@@ -32,7 +32,7 @@ const Blog = ({ user, blog, addLike, deleteBlog }) => {
 
   return (
     <div style={blogStyle} >
-      <p style={titleStyle} onClick={() => setDetailsVisible(!detailsVisible)}>{blog.title} by {blog.author}</p>
+      <h3 style={titleStyle} onClick={() => setDetailsVisible(!detailsVisible)}>{blog.title} by {blog.author}</h3>
       {detailsVisible ?
         <div>
         Likes: {blog.likes} <button style={buttonStyle} onClick={addOneLike} >Like</button><br />
