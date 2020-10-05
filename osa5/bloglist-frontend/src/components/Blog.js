@@ -91,10 +91,11 @@ const BlogForm = ({ addBlog }) => {
     <div>
 
       <h2>Add a blog</h2>
-      <form onSubmit={handleBlogAdd}>
+      <form id="addBlogForm" onSubmit={handleBlogAdd}>
         <div>
           Title:
           <input value={title}
+            id="title"
             type="text"
             onChange={({ target }) => setTitle(target.value)}
             ref={blogInput}
@@ -104,6 +105,7 @@ const BlogForm = ({ addBlog }) => {
           Author:
           <input
             value={author}
+            id="author"
             type="text"
             onChange={({ target }) => setAuthor(target.value)}
           />
@@ -112,6 +114,7 @@ const BlogForm = ({ addBlog }) => {
           Address:
           <input
             value={url}
+            id="url"
             type="text"
             onChange={({ target }) => setUrl(target.value)}
           />
