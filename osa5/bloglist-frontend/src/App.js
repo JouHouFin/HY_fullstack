@@ -101,8 +101,7 @@ const App = () => {
 
   return (
     <div>
-      <h2>Blog app</h2>
-      {notification === null ? <div><br/></div> : null}
+      <h2 style={{ display: "inline-block", marginBottom: "25px" }}>Blog app</h2>
       <Notification notification={notification} />
       {user === null ? null : <UserInfo user={user} logout={handleLogout}/>}
       {user === null ? <LoginForm login={handleLogin} loginInput={loginInput}/> : null}

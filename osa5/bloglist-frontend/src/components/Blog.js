@@ -32,10 +32,9 @@ const Blog = ({ user, blog, addLike, deleteBlog }) => {
 
   return (
     <div style={blogStyle} >
-      <p style={titleStyle} onClick={() => setDetailsVisible(!detailsVisible)}>{blog.title}</p>
+      <p style={titleStyle} onClick={() => setDetailsVisible(!detailsVisible)}>{blog.title} by {blog.author}</p>
       {detailsVisible ?
         <div>
-        Author: {blog.author}<br />
         Likes: {blog.likes} <button style={buttonStyle} onClick={addOneLike} >Like</button><br />
         URL: <a href={blog.url}>{blog.url}</a><br />
         Added by: {blog.user.name}<br />

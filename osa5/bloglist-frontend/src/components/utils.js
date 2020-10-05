@@ -47,8 +47,8 @@ const Notification = ({ notification }) => {
   if (!notification) return null
 
   const style = notification.type === 'error' ?
-    { backgroundColor: 'pink', border: '2px solid red', padding: '3px', width: '50%' } :
-    { backgroundColor: 'lightGreen', border: '2px solid green', padding: '3px', width: '50%' }
+    { marginLeft: "10px", backgroundColor: 'pink', border: '2px solid red', padding: '3px', width: '50%', display: "inline-block" } :
+    { marginLeft: "10px", backgroundColor: 'lightGreen', border: '2px solid green', padding: '3px', width: '50%', display: "inline-block" }
   return (
     notification === null ? null : <h4 style={style}>{notification.msg}</h4>
   )
