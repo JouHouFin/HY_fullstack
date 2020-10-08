@@ -72,7 +72,7 @@ const App = () => {
     try {
       blogService.setToken(user.token)
       const updatedBlog = await blogService.update(likesPlusOne, blogObject.id)
-      const newBlogs  = blogs.map(blog => blog.id === blogObject.id ? updatedBlog : blog)
+      const newBlogs  = await blogs.map(blog => blog.id === blogObject.id ? updatedBlog : blog)
       setBlogs(newBlogs)
       handleNotification(`+1 to "${blogObject.title}"`, 'success')
     } catch (error) {

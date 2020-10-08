@@ -35,7 +35,7 @@ const Blog = ({ user, blog, addLike, deleteBlog }) => {
       <h3 style={titleStyle} onClick={() => setDetailsVisible(!detailsVisible)}>{blog.title} by {blog.author}</h3>
       {detailsVisible ?
         <div>
-        Likes: {blog.likes} <button style={buttonStyle} onClick={addOneLike} >Like</button><br />
+          <span id="likes">Likes: {blog.likes} <button id="likeButton" style={buttonStyle} onClick={addOneLike} >Like</button><br /></span>
         URL: <a href={blog.url}>{blog.url}</a><br />
         Added by: {blog.user.name}<br />
           {user.username === blog.user.username ? <button style={buttonStyle} onClick={deleteThis}>Remove this blog</button> : null}
