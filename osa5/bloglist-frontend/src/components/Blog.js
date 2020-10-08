@@ -54,7 +54,7 @@ Blog.propTypes = {
 const Bloglist = ({ user, blogs, addLike, deleteBlog }) => {
   blogs.sort((a,b) => a.likes < b.likes ? 1 : -1)
   return (
-    <div>
+    <div id="bloglist">
       <h2>Blogs</h2>
       {blogs.map(blog => <Blog key={blog.id} blog={blog} addLike={addLike} user={user} deleteBlog={deleteBlog} />)}
     </div>
@@ -119,7 +119,7 @@ const BlogForm = ({ addBlog }) => {
             onChange={({ target }) => setUrl(target.value)}
           />
         </div>
-        <button type="submit">Add</button>
+        <button id="addBlogButton" type="submit">Add</button>
       </form>
     </div>
   )
