@@ -40,7 +40,8 @@ blogsRouter.post('/', async (request, response) => {
     }
   )
 
-  const result = await blog.save()
+  let result = await blog.save()
+  result.populate('user', () => {})
   user.blogs = user.blogs.concat(result._id)
   await user.save()
   response.status(201).json(result)
@@ -48,7 +49,7 @@ blogsRouter.post('/', async (request, response) => {
 
 blogsRouter.delete('/:id', async (request, response) => {
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
-  const user = await User.findById(decodedToken.id)
+  var user = await User.findById(decodedToken.id)
 
   if (!request.token || !decodedToken.id) {
     return response.status(401).json({ error: 'token missing or invalid' })
@@ -61,6 +62,8 @@ blogsRouter.delete('/:id', async (request, response) => {
 
   if ( blog.user.toString() === user._id.toString() ){
     await Blog.findByIdAndDelete(request.params.id)
+    user.blogs = user.blogs.filter(blog => blog._id.toString() !== request.params.id)
+    await User.findByIdAndUpdate(user.id, user, { new: true })
     return response.status(204).end()
   }
   response.status(401).json({ error: 'unauthorized operation: trying to delete someone other´s blog?' })

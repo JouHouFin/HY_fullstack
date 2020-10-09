@@ -52,7 +52,8 @@ const App = () => {
   const addBlog = async (blogObject) => {
     try {
       blogService.setToken(user.token)
-      const addedBlog = await blogService.create(blogObject)
+      const addedBlog = await blogService.create( blogObject )
+      console.log(addedBlog)
       setBlogs(blogs.concat(addedBlog))
       blogFormRef.current.toggleVisibility()
       handleNotification(`Blog "${blogObject.title}" added successfully`, 'success')

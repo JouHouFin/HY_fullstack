@@ -31,14 +31,14 @@ const Blog = ({ user, blog, addLike, deleteBlog }) => {
   }
 
   return (
-    <div style={blogStyle} >
+    <div id="singleBlog" style={blogStyle} >
       <h3 style={titleStyle} onClick={() => setDetailsVisible(!detailsVisible)}>{blog.title} by {blog.author}</h3>
       {detailsVisible ?
         <div>
           <span id="likes">Likes: {blog.likes} <button id="likeButton" style={buttonStyle} onClick={addOneLike} >Like</button><br /></span>
         URL: <a href={blog.url}>{blog.url}</a><br />
         Added by: {blog.user.name}<br />
-          {user.username === blog.user.username ? <button style={buttonStyle} onClick={deleteThis}>Remove this blog</button> : null}
+          {user.username === blog.user.username ? <button id="removeButton" style={buttonStyle} onClick={deleteThis}>Remove this blog</button> : null}
         </div>
         : null}
     </div>

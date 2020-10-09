@@ -57,7 +57,7 @@ const Notification = ({ notification }) => {
 const UserInfo = ({ user, logout }) => {
   return (
     <div>
-      {user.name} is currently logged in <button onClick={logout}>Log me out</button>
+      {user.name} is currently logged in <button id="logoutButton" onClick={logout}>Log me out</button>
     </div>
   )
 }

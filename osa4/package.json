@@ -8,7 +8,7 @@
     "dev": "NODE_ENV=development nodemon index.js",
     "test": "NODE_ENV=test jest --verbose --runInBand",
     "lint": "eslint .",
-    "start:cypress": "NODE_ENV=cypress node index.js"
+    "start:cypress": "NODE_ENV=cypress nodemon index.js"
   },
   "author": "Juho Holmi",
   "license": "MIT",
