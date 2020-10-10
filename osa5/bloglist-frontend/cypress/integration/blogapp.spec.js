@@ -46,9 +46,7 @@ describe('Blog app', function() {
 
   describe('When logged in', function() {
     beforeEach(function() {
-      cy.get('#username').type('test')
-      cy.get('#password').type('test')
-      cy.get('#login-button').click()
+      cy.login({ username: 'test', password: 'test' })
     })
 
     it('A blog can be created', function() {
@@ -87,7 +85,8 @@ describe('Blog app', function() {
       cy.get('#removeButton').click()
       cy.get('#bloglist').should('not.contain', 'blogToBeRemoved by authorToBeRemoved')
     })
-    it.only('A blog cannot be removed by a user who did not add the blog', function() {
+
+    it('A blog cannot be removed by a user who did not add the blog', function() {
       cy.contains('Add new blog').click()
       cy.get('#title').type('blogNotToBeRemoved')
       cy.get('#author').type('authorNotToBeRemoved')
@@ -96,12 +95,61 @@ describe('Blog app', function() {
       cy.get('#bloglist').should('contain', 'blogNotToBeRemoved by authorNotToBeRemoved')
       cy.get('#logoutButton').click()
 
-      cy.get('#username').type('user')
-      cy.get('#password').type('user')
-      cy.get('#login-button').click()
+      cy.login({ username: 'user', password: 'user' })
       cy.wait(500)
       cy.get('#singleBlog').click()
       cy.get('#singleBlog').should('not.contain', '#removeButton')
+    })
+  })
+
+  describe('Blog ordering',function() {
+
+    it('Blogs are ordered by number of likes in descending order', function() {
+      cy.login({ username: 'test', password: 'test' })
+      cy.setToken().then(val => {
+        const token = val
+        const blogs = [
+          {
+            title: 'blogWithOneLike',
+            author: 'authorWithOneLike',
+            url: 'urlWithOneLike',
+            likes: 1
+          },
+          {
+            title: 'blogWithTwoLikes',
+            author: 'authorWithTwoLikes',
+            url: 'urlWithTwoLikes',
+            likes: 2
+          },
+          {
+            title: 'blogWithLotsOfLikes',
+            author: 'authorWithLotsOfLikes',
+            url: 'urlWithLotsOfLikes',
+            likes: 1231231
+          },
+          {
+            title: 'blogWithZeroLikes',
+            author: 'authorWithZeroLikes',
+            url: 'urlWithZeroLikes',
+            likes: 0
+          }
+        ]
+        blogs.forEach(blog => cy.request(
+          {
+            method: 'POST',
+            url: 'http://localhost:3001/api/blogs',
+            body: blog,
+            auth: { bearer: token }
+          })
+        )
+        cy.visit('http://localhost:3000')
+        cy.get('#bloglist>#singleBlog').then(blogs => {
+          cy.get(blogs[0]).should('contain', 'blogWithLotsOfLikes')
+          cy.get(blogs[1]).should('contain', 'blogWithTwoLikes')
+          cy.get(blogs[2]).should('contain', 'blogWithOneLike')
+          cy.get(blogs[3]).should('contain', 'blogWithZeroLikes')
+        })
+      })
     })
   })
 })
