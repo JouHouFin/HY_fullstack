@@ -13,8 +13,9 @@ const App = () => {
 
   const createAnecdote = (e) => {
     e.preventDefault()
-    dispatch(create(e.target.anecdoteContent.value))
+    const content = e.target.anecdoteContent.value
     e.target.anecdoteContent.value = ''
+    dispatch(create(content))
   }
 
   return (
