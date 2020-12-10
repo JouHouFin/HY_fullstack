@@ -20,7 +20,7 @@ export const created = (content) => {
   }
 }
 
-export const voted = (content) => {
+export const wasVoted = (content) => {
   return {
     type: 'VOTED',
     data: content 
