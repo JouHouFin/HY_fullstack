@@ -2,10 +2,8 @@ const initialState = null
 
 export const notificationReducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'CREATED':
-      return `Added new anecdote: ${action.data}`
-    case 'VOTED':
-      return `Voted ${action.data}`
+    case 'SET':
+      return action.data
     case 'FLUSH':
       return null
     default:
@@ -13,22 +11,18 @@ export const notificationReducer = (state = initialState, action) => {
   }
 }
 
-export const created = (content) => {
-  return {
-    type: 'CREATED',
-    data: content 
-  }
-}
+export const setNotification = (msg, timeout) => {
+  return async dispatch => {
+    dispatch({    
+      type: 'SET',
+      data: msg 
+    })    
+    setTimeout(() => {
+      dispatch({    
+        type: 'FLUSH'
+      })    
+    }, timeout);
 
-export const wasVoted = (content) => {
-  return {
-    type: 'VOTED',
-    data: content 
-  }
-}
 
-export const flush = () => {
-  return {
-    type: 'FLUSH'
   }
 }
