@@ -3,9 +3,9 @@ const initialState = null
 export const notificationReducer = (state = initialState, action) => {
   switch (action.type) {
     case 'CREATED':
-      return `Added new anecdote: ${action.data.content}`
+      return `Added new anecdote: ${action.data}`
     case 'VOTED':
-      return `Voted ${action.data.content}`
+      return `Voted ${action.data}`
     case 'FLUSH':
       return null
     default:
@@ -16,14 +16,14 @@ export const notificationReducer = (state = initialState, action) => {
 export const created = (content) => {
   return {
     type: 'CREATED',
-    data: { content }
+    data: content 
   }
 }
 
 export const voted = (content) => {
   return {
     type: 'VOTED',
-    data: { content }
+    data: content 
   }
 }
 
