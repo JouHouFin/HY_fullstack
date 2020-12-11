@@ -1,24 +1,20 @@
 import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { connect } from 'react-redux'
 import { vote } from '../reducers/anecdoteReducer'
 import { setNotification } from '../reducers/notificationReducer'
 
-export const AnecdoteList = () => {
-  const anecdotes = useSelector(state => state.anecdotes)
-  const filter = useSelector(state => state.filter)
-  const dispatch = useDispatch()
-
-  const regex = RegExp(filter, 'i');
-  const filteredAnecdotes = anecdotes.filter(anecdote => regex.test(anecdote.content))
-  const sortedAnecdotes = filteredAnecdotes.sort((a, b) => b.votes - a.votes)
+export const AnecdoteList = (props) => {
+  const anecdotes = props.anecdotes
+  const vote = props.vote
+  const setNotification = props.setNotification
 
   const dispatchVote = (anecdote) => {
-    dispatch(vote(anecdote))
-    dispatch(setNotification(`Voted '${anecdote.content}'`, 5000))
+    vote(anecdote)
+    setNotification(`Voted '${anecdote.content}'`, 5000)
   }
 
   return (
-    sortedAnecdotes.map(anecdote =>
+    anecdotes.map(anecdote =>
       <div key={anecdote.id}>
         <div>
           {anecdote.content}
@@ -31,3 +27,22 @@ export const AnecdoteList = () => {
     )
   )
 }
+
+const mapStateToProps = (state) => {
+  const regex = RegExp(state.filter, 'i');
+  const filteredAnecdotes = state.anecdotes.filter(anecdote => regex.test(anecdote.content))
+  const sortedAnecdotes = filteredAnecdotes.sort((a, b) => b.votes - a.votes)
+
+  return {
+    anecdotes: sortedAnecdotes,
+    filter: state.filter,
+  }
+}
+
+const mapDispatchToProps = {
+  vote,
+  setNotification
+}
+
+const ConnectedAnecdoteList = connect(mapStateToProps, mapDispatchToProps)(AnecdoteList)
+export { ConnectedAnecdoteList }
