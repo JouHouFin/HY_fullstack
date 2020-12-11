@@ -4,9 +4,7 @@ export const anecdoteReducer = (state = [], action) => {
   switch (action.type) {
     case 'VOTE':
       const id = action.data.id
-      const anecdoteToChange = state.find(anecdote => anecdote.id === id)
-      const changedAnecdote = { ...anecdoteToChange, votes: anecdoteToChange.votes + 1}
-      return state.map(anecdote => anecdote.id === id ? changedAnecdote : anecdote )
+      return state.map(anecdote => anecdote.id === id ? action.data : anecdote )
     case 'CREATE':
       return state.concat(action.data)
     case 'INIT':

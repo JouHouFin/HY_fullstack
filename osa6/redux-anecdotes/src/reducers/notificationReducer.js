@@ -1,11 +1,10 @@
-const initialState = null
-
-export const notificationReducer = (state = initialState, action) => {
+export const notificationReducer = (state = '', action) => {
   switch (action.type) {
     case 'SET':
+      clearTimeout(state.timeoutID)
       return action.data
     case 'FLUSH':
-      return null
+      return ''
     default:
       return state
   }
@@ -13,16 +12,18 @@ export const notificationReducer = (state = initialState, action) => {
 
 export const setNotification = (msg, timeout) => {
   return async dispatch => {
-    dispatch({    
-      type: 'SET',
-      data: msg 
-    })    
-    setTimeout(() => {
+    
+    
+    const timeoutID = setTimeout(() => {
       dispatch({    
         type: 'FLUSH'
       })    
     }, timeout);
 
+    dispatch({    
+      type: 'SET',
+      data: { msg, timeoutID } 
+    }) 
 
   }
 }
