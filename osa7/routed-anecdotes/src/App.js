@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
-import { Switch, Route, Link, useRouteMatch } from "react-router-dom"
+import { Switch, Route, Link, useRouteMatch, useHistory } from "react-router-dom"
 
 import { AnecdoteList, SingleAnecdote } from './components/Anecdote'
 import { CreateNew } from './components/CreateNew'
+import { Notification } from './components/Notification'
 
 const Menu = () => {
   const padding = {
@@ -64,10 +65,16 @@ const App = () => {
   
 
   const [notification, setNotification] = useState('')
+  const history = useHistory()
 
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
     setAnecdotes(anecdotes.concat(anecdote))
+    setTimeout(() => {
+      setNotification('')
+    }, 10000);
+    setNotification(`New anecdote '${anecdote.content}' by ${anecdote.author} added`)
+    history.push('/')
   }
 
   const anecdoteById = (id) =>
@@ -88,6 +95,7 @@ const App = () => {
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
+      <Notification notification={notification} />
       <Switch>
         <Route path='/about'>
           <About />
