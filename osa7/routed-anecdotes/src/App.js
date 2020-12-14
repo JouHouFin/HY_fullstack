@@ -9,6 +9,7 @@ import { Menu } from './components/Menu'
 import { Footer } from './components/Footer'
 
 const App = () => {
+  
   const [anecdotes, setAnecdotes] = useState([
     {
       content: 'If it hurts, do it more often',
