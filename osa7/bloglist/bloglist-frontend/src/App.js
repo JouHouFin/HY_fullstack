@@ -77,7 +77,7 @@ const App = () => {
       blogService.setToken(user.token)
       const updatedBlog = await blogService.update(likesPlusOne, blogObject.id)
       const newBlogs  = await blogs.map(blog => blog.id === blogObject.id ? updatedBlog : blog)
-      setBlogs(newBlogs)
+      dispatch(setBlogs(newBlogs))
       handleNotification(`+1 to "${blogObject.title}"`, 'success')
     } catch (error) {
       handleNotification(error.response.data.error, 'error')
@@ -89,7 +89,7 @@ const App = () => {
       blogService.setToken(user.token)
       await blogService.remove(blogObject.id)
       const newBlogs  = blogs.filter(blog => blog.id !== blogObject.id)
-      setBlogs(newBlogs)
+      dispatch(setBlogs(newBlogs))
       handleNotification(`Blog "${blogObject.title}" by ${blogObject.author} removed`, 'success')
     } catch (error) {
       console.log(error)
