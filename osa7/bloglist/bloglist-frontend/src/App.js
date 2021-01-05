@@ -7,13 +7,14 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import Togglable from './components/Togglable'
 import { setNotification } from './reducers/notificationReducer'
+import { setBlogs } from './reducers/blogReducer'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
 
   const dispatch = useDispatch()
-  const notification = useSelector(state => state)
+  const notification = useSelector(state => state.notification)
+  const blogs = useSelector(state => state.blogs)
 
   const blogFormRef = useRef(null)
   const loginInput = useRef(null)
@@ -22,10 +23,10 @@ const App = () => {
   }
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
-  }, [])
+    blogService.getAll().then(blogs => {  
+      dispatch(setBlogs(blogs))
+    })
+  }, [dispatch])
 
   useEffect(() => {
     const loggedInUser = window.localStorage.getItem('loggedInUser')
@@ -56,7 +57,7 @@ const App = () => {
       blogService.setToken(user.token)
       const addedBlog = await blogService.create( blogObject )
       console.log(addedBlog)
-      setBlogs(blogs.concat(addedBlog))
+      dispatch(setBlogs(blogs.concat(addedBlog)))
       blogFormRef.current.toggleVisibility()
       handleNotification(`Blog "${blogObject.title}" added successfully`, 'success')
     } catch (error) {
